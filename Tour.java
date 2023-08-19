@@ -82,76 +82,35 @@ public class Tour {
         String[] dir= {"up", "up", "left", "right", "left", "right", "down", "down"};
 
         while(q1.size() > 0){
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            wait(2000);
 
-            pair p= q1.poll();
-            //  Setting the border
-
+            //  Color
             Random rand= new Random();
             float r= rand.nextFloat();;
             float g= rand.nextFloat();;
             float b= rand.nextFloat();;
             Color obj= new Color(r, g, b);
 
+            pair p= q1.poll();
+
             //  Coloring the path
             if(p.dir.equals("up") || p.dir.equals("down")){
-
                 //  Highlighting the border
-                for(int i= Math.min(p.prevX, p.x); i<= Math.max(p.prevX, p.x); i++){
-                    jLabel[i][p.prevY].setBorder(BorderFactory.createLineBorder(obj, 3));
-                }
+                highlightPathUpDown(p.prevX, p.prevY, p.x, p.y, p.steps, obj);
 
-                for(int i= Math.min(p.prevY, p.y); i<= Math.max(p.prevY, p.y); i++){
-                    jLabel[p.x][i].setBorder(BorderFactory.createLineBorder(obj, 3));
-                }
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                wait(2000);
 
                 //  Coloring the path
-                for(int i= Math.min(p.prevX, p.x); i<= Math.max(p.prevX, p.x); i++){
-                    jLabel[i][p.prevY].setBackground(obj);
-                    jLabel[i][p.prevY].setText(p.steps+"");
-                }
-
-                for(int i= Math.min(p.prevY, p.y); i<= Math.max(p.prevY, p.y); i++){
-                    jLabel[p.x][i].setBackground(obj);
-                    jLabel[p.x][i].setText(p.steps+"");
-                }
+                colorPathUpDown(p.prevX, p.prevY, p.x, p.y, p.steps, obj);
             }
             else{
                 //  Highlighting the border
-                for(int i= Math.min(p.prevY, p.y); i<= Math.max(p.prevY, p.y); i++){
-                    jLabel[p.prevX][i].setBorder(BorderFactory.createLineBorder(obj, 3));
-                }
+                highlightPathLeftRight(p.prevX, p.prevY, p.x, p.y, p.steps, obj);
 
-                for(int i= Math.min(p.prevX, p.x); i<= Math.max(p.prevX, p.x); i++){
-                    jLabel[i][p.y].setBorder(BorderFactory.createLineBorder(obj, 3));
-                }
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                wait(2000);
 
                 //  Coloring the path
-                for(int i= Math.min(p.prevY, p.y); i<= Math.max(p.prevY, p.y); i++){
-                    jLabel[p.prevX][i].setBackground(obj);
-                    jLabel[p.prevX][i].setText(p.steps+"");
-                }
-
-                for(int i= Math.min(p.prevX, p.x); i<= Math.max(p.prevX, p.x); i++){
-                    jLabel[i][p.y].setBackground(obj);
-                    jLabel[i][p.y].setText(p.steps+"");
-                }
+                colorPathLeftRight(p.prevX, p.prevY, p.x, p.y, p.steps, obj);
             }
 
             if(p.x == xDest && p.y == yDest){
@@ -159,12 +118,10 @@ public class Tour {
             }
 
             for(int i=0; i<8; i++){
-
                 if( check(n, p.x+xDir[i], p.y+yDir[i]) ){
                     vis[p.x+xDir[i]][p.y+yDir[i]]= true;
                     q1.add(new pair(p.x+xDir[i], p.y+yDir[i], p.steps+1, dir[i], p.x, p.y));
                 }
-
             }
         }
 
@@ -176,5 +133,57 @@ public class Tour {
             return false;
         }
         return true;
+    }
+
+    public static void highlightPathUpDown(int prevX, int prevY, int x, int y, int steps, Color obj){
+        for(int i= Math.min(prevX, x); i<= Math.max(prevX, x); i++){
+            jLabel[i][prevY].setBorder(BorderFactory.createLineBorder(obj, 3));
+        }
+
+        for(int i= Math.min(prevY, y); i<= Math.max(prevY, y); i++){
+            jLabel[x][i].setBorder(BorderFactory.createLineBorder(obj, 3));
+        }
+    }
+
+    public static void highlightPathLeftRight(int prevX, int prevY, int x, int y, int steps, Color obj){
+        for(int i= Math.min(prevY, y); i<= Math.max(prevY, y); i++){
+            jLabel[prevX][i].setBorder(BorderFactory.createLineBorder(obj, 3));
+        }
+
+        for(int i= Math.min(prevX, x); i<= Math.max(prevX, x); i++){
+            jLabel[i][y].setBorder(BorderFactory.createLineBorder(obj, 3));
+        }
+    }
+
+    public static void colorPathUpDown(int prevX, int prevY, int x, int y, int steps, Color obj){
+        for(int i= Math.min(prevX, x); i<= Math.max(prevX, x); i++){
+            jLabel[i][prevY].setBackground(obj);
+            jLabel[i][prevY].setText(steps+"");
+        }
+
+        for(int i= Math.min(prevY, y); i<= Math.max(prevY, y); i++){
+            jLabel[x][i].setBackground(obj);
+            jLabel[x][i].setText(steps+"");
+        }
+    }
+
+    public static void colorPathLeftRight(int prevX, int prevY, int x, int y, int steps, Color obj){
+        for(int i= Math.min(prevY, y); i<= Math.max(prevY, y); i++){
+            jLabel[prevX][i].setBackground(obj);
+            jLabel[prevX][i].setText(steps+"");
+        }
+
+        for(int i= Math.min(prevX, x); i<= Math.max(prevX, x); i++){
+            jLabel[i][y].setBackground(obj);
+            jLabel[i][y].setText(steps+"");
+        }
+    }
+
+    public static void wait(int time_ms){
+        try {
+            Thread.sleep(time_ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
