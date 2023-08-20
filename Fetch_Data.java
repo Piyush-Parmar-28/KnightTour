@@ -10,13 +10,7 @@ import java.util.Scanner;
 
 public class Fetch_Data {
     static org.json.simple.JSONArray matrix;
-    static class Board {
-        private String grids;
 
-        public String get() {
-            return grids;
-        }
-    }
     public static void main(String[] args) {
         String apiUrl = "https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:1){grids{value}}}";
         matrix= new JSONArray();
